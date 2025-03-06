@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 namespace DOC
@@ -40,14 +41,13 @@ namespace DOC
 
             inputHandler.TickInput(delta);
 
-            moveDirection = cameraObject.forward * inputHandler.vertical;
+            moveDirection = Vector3.Normalize(new Vector3(cameraObject.forward.x, 0, cameraObject.forward.z)) * inputHandler.vertical;
             moveDirection += cameraObject.right * inputHandler.horizontal;
             moveDirection.Normalize();
 
-            float speed = movementSpeed;
-            moveDirection *= speed;
+            moveDirection *= movementSpeed;
 
-            Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, normalVector);
+            Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, Vector3.up);
             rigidbody.linearVelocity = projectedVelocity;
 
             animatorHandler.UpdateAnimatorValues(inputHandler.moveAmount, 0);
@@ -57,9 +57,6 @@ namespace DOC
             }
         }
 
-        #region Movement
-
-        Vector3 normalVector;
         Vector3 targetPosition;
         private void HandleRotation(float delta)
         {
@@ -82,7 +79,7 @@ namespace DOC
 
             myTransform.rotation = targetRotation;
         }
-        #endregion
+
 
     }
 }
