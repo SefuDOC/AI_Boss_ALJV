@@ -10,6 +10,11 @@ namespace DOC
         public float mouseX;
         public float mouseY;
 
+
+        public bool b_Input;
+        public bool rollFlag;
+        public bool isInteracting;
+
         PlayerControls inputActions;
 
         Vector2 movementInput;
@@ -25,6 +30,7 @@ namespace DOC
             }
             inputActions.Enable();
 
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void OnDisable()
@@ -35,6 +41,7 @@ namespace DOC
         public void TickInput(float delta)
         {
             MoveInput(delta);
+            HandleRollInput(delta);
         }
 
         private void MoveInput(float delta)
@@ -46,5 +53,14 @@ namespace DOC
             mouseY = cameraInput.y;
         }
 
+
+        private void HandleRollInput(float delta)
+        {
+            b_Input = inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Started;
+            if( b_Input)
+            {
+                rollFlag = true;
+            }
+        }
     }
 }

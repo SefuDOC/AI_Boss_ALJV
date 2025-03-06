@@ -40,6 +40,14 @@ namespace DOC
             float delta = Time.deltaTime;
 
             inputHandler.TickInput(delta);
+            HandleMovement(delta);
+            HandleRollingandSprinting(delta);
+        }
+
+
+
+        public void HandleMovement(float delta)
+        {
 
             moveDirection = Vector3.Normalize(new Vector3(cameraObject.forward.x, 0, cameraObject.forward.z)) * inputHandler.vertical;
             moveDirection += cameraObject.right * inputHandler.horizontal;
@@ -80,6 +88,29 @@ namespace DOC
             myTransform.rotation = targetRotation;
         }
 
+        public void HandleRollingandSprinting(float delta)
+        {
+            if (animatorHandler.anim.GetBool("isInteracting"))
+                return;
+
+            if (inputHandler.rollFlag)
+            {
+                moveDirection = Vector3.Normalize(new Vector3(cameraObject.forward.x, 0, cameraObject.forward.z)) * inputHandler.vertical;
+                moveDirection += cameraObject.right * inputHandler.horizontal;
+                moveDirection.Normalize();
+
+                if(inputHandler.moveAmount > 0)
+                {
+                    animatorHandler.PlayTargetAnimation("Rolling", true);
+                    Quaternion rollRotation = Quaternion.LookRotation(moveDirection);
+                    myTransform.rotation = rollRotation;
+                }
+                else
+                {
+                    animatorHandler.PlayTargetAnimation("Backstep", true);
+                }
+            }
+        }
 
     }
 }
